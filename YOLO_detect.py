@@ -1,12 +1,31 @@
 import cv2
 import numpy as np
 
+import rospy
+import std_msgs as msg
+
+def talker(box):
+    pub = rospy.Publisher('bbox', msg.Int32MultiArray, queue_size = 20)
+    rospy.init_node('talker', anonymous=True)
+    rate = rospy.Rate(20)
+    while not rospy.is_shutdown():
+        bbox_arr = box
+        rospy.loginfor(bbox_arr)
+        pub.publish(bbox_arr)
+        rate.sleep()
+
 cap = cv2.VideoCapture(0)
 whT = 320
-confThreshold = 0.5
+confThreshold = 0.4
 nmsThreshold = 0.3 # the lower the more aggressive and the less no. of boxes
 
 classeNames = ['person']
+
+# classesFile = 'class.names'
+# classNames = []
+# with open(classesFile, 'rt') as f:
+#     classNames = f.read().rstrip('\n').split('\n')
+
 
 modelConfiguration = 'detection_models/yolov3-tiny.cfg'
 modelWeights = 'detection_models/yolov3-tiny.weights'
@@ -33,14 +52,23 @@ def findObject(outputs, img):
                 classIds.append(classId)
                 confs.append(float(confidence))
     indices = cv2.dnn.NMSBoxes(bbox, confs, confThreshold, nmsThreshold)
+
     for i in indices:
         i = i[0]
         box = bbox[i]
+        # print(box)
         x, y, w, h = box[0], box[1], box[2], box[3]
         cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 255), 2)
         cv2.putText(img, f'PERSON {int(confs[i]*100)}%', 
             (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
-        # {classeNames[classIds[i]].upper()} if more classes instead of PERSON
+        # {classNames[classIds[i]].upper()} if more classes instead of PERSON
+        if __name__ == '__main__':
+            try:
+                talker(box)
+            except rospy.ROSInterruptException:
+                pass
+    # print("...........")
+
 
 while True:
     success, img = cap.read()
@@ -52,7 +80,6 @@ while True:
     outputNames = [layerNames[i[0]-1] for i in net.getUnconnectedOutLayers()]
 
     outputs = net.forward(outputNames)
-    # print(outputs[0][0])
 
     findObject(outputs, img)
 

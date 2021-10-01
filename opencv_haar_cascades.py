@@ -5,6 +5,8 @@ import imutils
 import time
 import cv2
 import os
+import pyautogui
+import numpy as np
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -30,6 +32,7 @@ for (name, path) in detectorPaths.items():
 
 # initialize the video stream and allow the camera sensor to warm up
 print("[INFO] starting video stream...")
+
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
@@ -37,9 +40,16 @@ time.sleep(2.0)
 while True:
     # grab the frame from the video stream, resize it, and convert it
     # to grayscale
+
     frame = vs.read()
+
+    # frame = pyautogui.screenshot() # for screenshare
+    # frame = np.array(frame) # for screenshare
+    # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # for screenshare
+
     frame = imutils.resize(frame, width=500)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # gray = frame # for screenshare
     # perform face detection using the appropriate haar cascade
     faceRects = detectors["face"].detectMultiScale(
         gray, scaleFactor=1.05, minNeighbors=5, minSize=(30, 30),
@@ -52,7 +62,7 @@ while True:
         # draw the face bounding box on the frame
         cv2.rectangle(frame, (fX, fY), (fX + fW, fY + fH),
             (0, 255, 0), 2)
-
+    
     # bodyRects = detectors["fullbody"].detectMultiScale(
     #     gray, scaleFactor=1.05, minNeighbors=4,
     #     minSize=(30, 10)
