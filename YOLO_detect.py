@@ -1,18 +1,18 @@
 import cv2
 import numpy as np
 
-import rospy
-import std_msgs as msg
+# import rospy
+# import std_msgs as msg
 
-def talker(box):
-    pub = rospy.Publisher('bbox', msg.Int32MultiArray, queue_size = 20)
-    rospy.init_node('talker', anonymous=True)
-    rate = rospy.Rate(20)
-    while not rospy.is_shutdown():
-        bbox_arr = box
-        rospy.loginfor(bbox_arr)
-        pub.publish(bbox_arr)
-        rate.sleep()
+# def talker(box):
+#     pub = rospy.Publisher('bbox', msg.Int32MultiArray, queue_size = 20)
+#     rospy.init_node('talker', anonymous=True)
+#     rate = rospy.Rate(20)
+#     while not rospy.is_shutdown():
+#         bbox_arr = box
+#         rospy.loginfor(bbox_arr)
+#         pub.publish(bbox_arr)
+#         rate.sleep()
 
 cap = cv2.VideoCapture(0)
 whT = 320
@@ -62,11 +62,11 @@ def findObject(outputs, img):
         cv2.putText(img, f'PERSON {int(confs[i]*100)}%', 
             (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
         # {classNames[classIds[i]].upper()} if more classes instead of PERSON
-        if __name__ == '__main__':
-            try:
-                talker(box)
-            except rospy.ROSInterruptException:
-                pass
+        # if __name__ == '__main__':
+        #     try:
+        #         talker(box)
+        #     except rospy.ROSInterruptException:
+        #         pass
     # print("...........")
 
 

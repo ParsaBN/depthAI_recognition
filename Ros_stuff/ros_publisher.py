@@ -36,7 +36,7 @@ import std_msgs as msg
 def talker(box):
     pub = rospy.Publisher('bbox', msg.Int32MultiArray, queue_size = 20)
     rospy.init_node('talker', anonymous=True)
-    rate = rospy.Rate(20)
+    rate = rospy.Rate(10) # this should be less than queue for multiple things in a msg ideally
     while not rospy.is_shutdown():
         bbox_arr = box
         rospy.loginfor(bbox_arr)
