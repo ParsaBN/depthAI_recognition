@@ -7,6 +7,20 @@ import numpy as np
 import time
 import argparse
 
+# import rospy
+# import std_msgs as msg
+
+# def talker(coords):
+#     pub = rospy.Publisher('target_coords', msg.Int32MultiArray, queue_size = 20)
+#     rospy.init_node('talker', anonymous=True)
+#     rate = rospy.Rate(10) # this should be less than queue for multiple things in a msg ideally
+#     while not rospy.is_shutdown():
+#         coords_arr = coords
+#         rospy.loginfor(coords_arr)
+#         pub.publish(coords_arr)
+#         rate.sleep()
+
+
 labelMap = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow",
             "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
 
@@ -128,6 +142,19 @@ with dai.Device(pipeline) as device:
             cv2.putText(frame, f"X: {int(t.spatialCoordinates.x)} mm", (x1 + 10, y1 + 65), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
             cv2.putText(frame, f"Y: {int(t.spatialCoordinates.y)} mm", (x1 + 10, y1 + 80), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
             cv2.putText(frame, f"Z: {int(t.spatialCoordinates.z)} mm", (x1 + 10, y1 + 95), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
+
+            print(t)
+            print(dir(t))
+
+            # we want to publish center x and z
+            center_x = x2-x1
+            target = [center_x, int(t.spatialCoordinates.z)]
+
+            # if __name__ == '__main__':
+            #     try:
+            #         talker(target)
+            #     except rospy.ROSInterruptException:
+            #         pass
 
         cv2.putText(frame, "NN fps: {:.2f}".format(fps), (2, frame.shape[0] - 4), cv2.FONT_HERSHEY_TRIPLEX, 0.4, color)
 
